@@ -1,0 +1,30 @@
+@if (isLoading) {
+  <mat-spinner></mat-spinner>
+}
+@if (!isLoading) {
+<mat-accordion>
+  @for (post of posts; track post.id ){
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{post.title}}</mat-panel-title>
+      <mat-panel-description>{{post.short}}</mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <p>{{post.content}}</p>
+
+    <button
+      color="primary"
+      type="button"
+      mat-raised-button
+      [routerLink]="['/edit', post.id]">EDIT</button>
+
+    <button
+      color="warining"
+      type="button"
+      mat-raised-button
+      (click)="delete(post.id)">DELETE</button>
+
+  </mat-expansion-panel>
+  }
+</mat-accordion>
+}

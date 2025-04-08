@@ -1,0 +1,16 @@
+{
+  "name": "node backend server",
+  "version": "0.0.1",
+  "scripts": {
+    "start:server": "nodemon server.js"
+  },
+  "dependencies": {
+    "debug": "^4.4.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

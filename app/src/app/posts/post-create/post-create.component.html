@@ -1,0 +1,40 @@
+
+@if (isLoading) {
+  <mat-spinner></mat-spinner>
+}
+
+@if (!isLoading) {
+<mat-card [formGroup]="form" style="margin-top: 10px">
+
+  <mat-form-field style="margin-top: 15px">
+    <mat-label>title</mat-label>
+    <input type="text" matInput formControlName="title" name="title">
+  </mat-form-field>
+
+  @if (form.get('title')?.touched && form.get('title')?.invalid) {
+    title invalid (min length 3)
+  }
+
+  <mat-form-field style="margin-top: 15px">
+    <mat-label>content</mat-label>
+    <textarea  matInput rows="6" formControlName="content"></textarea>
+  </mat-form-field>
+
+  <button (click)="uploadFile.click()"  type="button" color="accent" class="btn" mat-raised-button>upload img <mat-icon>upload_file</mat-icon></button>
+  <input type="file" #uploadFile hidden (change)="onImgPicked($event)">
+
+  @if (imagePreview && imagePreview != '') {
+    <div class="img-preview">
+      <img [src]="imagePreview" [alt]="form.get('title')?.value">
+    </div>
+  }
+
+  <button
+    [disabled]="form.invalid"
+    color="primary"
+    type="button"
+    mat-raised-button
+    class="btn"
+    (click)="sendPost()">Send Post</button>
+</mat-card>
+}

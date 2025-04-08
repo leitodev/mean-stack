@@ -1,0 +1,41 @@
+mat-slider {
+  width: 300px;
+}
+
+.btn {
+  margin: 5px;
+  width: 200px;
+}
+
+//.btn-upload {
+//
+//  margin: 5px;
+//  width: 50px;
+//
+//  .mdc-button__ripple {
+//    display: flex;
+//    justify-content: center;
+//  }
+//}
+
+.btn-upload {
+  margin: 5px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-mdc-button>.mat-icon {
+  margin-right: 0px !important;
+}
+
+mat-spinner {
+  margin: auto;
+}
+
+.img-preview img {
+  height: 250px;
+}
+
+
