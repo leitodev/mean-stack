@@ -12,6 +12,10 @@
 
     <p>{{post.content}}</p>
 
+    <div class="img-preview">
+      <img [src]="post.imagePath" alt="" width="300">
+    </div>
+
     <button
       color="primary"
       type="button"
@@ -27,4 +31,12 @@
   </mat-expansion-panel>
   }
 </mat-accordion>
+<mat-paginator
+  [length]="totalPosts"
+  [pageSize]="postsPerPage"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onPageChanged($event)"
+  aria-label="Select page">
+</mat-paginator>
+
 }

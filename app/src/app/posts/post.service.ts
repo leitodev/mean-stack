@@ -1,29 +1,51 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Post} from "./post";
 import {Subject} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{ posts: Post[], totalPosts: number }>();
+  private readonly router = inject(Router);
 
   constructor(private http: HttpClient) { }
 
-  getPosts() {
-    this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts').subscribe(data => {
+  getPosts(page: number, postsPerPage: number) {
+    const params  = new HttpParams()
+      .set('page', page)
+      .set('pagesize', postsPerPage);
+
+    this.http.get<{message: string, posts: Post[], totalPosts: number}>('http://localhost:3000/api/posts', {params}).subscribe(data => {
       this.posts = data.posts;
-      this.postsUpdated.next([...data.posts]);
+      this.postsUpdated.next({posts: [...data.posts], totalPosts: data.totalPosts});
     });
   }
 
-  updatePost(updatedPost: {id: string, title: string, content: string, image: File | null}) {
+  updatePost(updatedPost: {id: string, title: string, content: string, image: File | null | string}) {
     console.log('update!!!!!!!!!!!!', updatedPost);
 
-    this.http.put(`http://localhost:3000/api/posts/${updatedPost.id}`, updatedPost).subscribe(data => {
+    let postData: Post | FormData;
+    if (updatedPost.image && typeof updatedPost.image === 'object') {
+      postData = new FormData();
+      postData.append('title', updatedPost.title);
+      postData.append('content', updatedPost.content);
+      postData.append('image', updatedPost.image, updatedPost.title);
+    } else {
+      postData = {
+        id: updatedPost.id,
+        title: updatedPost.title,
+        content: updatedPost.content,
+        imagePath: updatedPost.image ? updatedPost.image : ''
+      }
+    }
+
+    this.http.put(`http://localhost:3000/api/posts/${updatedPost.id}`, postData).subscribe(data => {
       console.log('### after update', data);
+      this.router.navigate(['']).then(() => {});
     })
   }
 
@@ -31,13 +53,21 @@ export class PostService {
     return {...this.posts.find(post => post.id === id)}
   }
 
+  // TODO use TS utility for create another type (concat exist with image: File )
   addNewPost(post: Post) {
-    this.http.post<{ message: number, data: Post }>('http://localhost:3000/api/posts', post).subscribe(result => {
-      console.log('after post', result);
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    if (post.image) {
+      postData.append('image', post.image, post.title);
+    }
 
-      this.posts.push(result.data);
-      this.postsUpdated.next([...this.posts]);
-    })
+    this.http.post<{ message: number, data: Post, totalPosts: number }>('http://localhost:3000/api/posts', postData)
+      .subscribe(result => {
+        console.log('after post added', result);
+        this.router.navigate(['']).then(() => {});
+      });
+
   }
 
   getAllPosts() {
@@ -45,12 +75,7 @@ export class PostService {
   }
 
   deletePost(postId: string) {
-    this.http.delete('http://localhost:3000/api/posts/' + postId).subscribe(data => {
-
-      this.posts = this.posts.filter(post => post.id !== postId)
-      this.postsUpdated.next([...this.posts]);
-
-    });
+    return this.http.delete<{totalPosts: number, message: string}>('http://localhost:3000/api/posts/' + postId);
   }
 
 

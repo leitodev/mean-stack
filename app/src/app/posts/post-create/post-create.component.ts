@@ -10,12 +10,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatIcon} from "@angular/material/icon";
 import {mimeType} from "../mime-type.validator";
+import {Post} from "../post";
 
 interface Form {
   title: FormControl<string>;
   content: FormControl<string>;
   image: FormControl<File | null>;
 }
+type ImagePath = Post["imagePath"];
 
 @Component({
   selector: 'app-post-create',
@@ -41,6 +43,7 @@ export class PostCreateComponent implements OnInit {
   postId: string = '';
   isLoading = false;
   imagePreview: string = '';
+  oldImg: ImagePath;
 
   form = new FormGroup<Form>({
     title: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(3)]}),
@@ -63,19 +66,26 @@ export class PostCreateComponent implements OnInit {
           content: oldPost.content || '',
           image: oldPost.image || null,
         })
+        this.oldImg = oldPost.imagePath;
         this.isLoading = false;
       }
     });
   }
 
   sendPost() {
-    if (!this.form.valid) {
+    if (!this.form.valid && !this.oldImg) {
       return;
     }
 
     const title = this.form.controls.title.value;
     const content = this.form.controls.content.value;
-    const image = this.form.controls.image.value;
+    let image: any = this.form.controls.image.value;
+
+    if (!image && this.oldImg) {
+      image = this.oldImg;
+    }
+
+    console.log('image', image);
 
     const newPost = {
       id:  Math.floor(Math.random() * 121323).toString(),
@@ -92,18 +102,10 @@ export class PostCreateComponent implements OnInit {
         content: content,
         image: image,
       });
-
-      this.redirectToPosts();
       return;
     }
 
     this.postService.addNewPost(newPost); // to db
-    this.redirectToPosts();
-  }
-
-
-  redirectToPosts(): void {
-    this.router.navigate(['']).then();
   }
 
   onImgPicked(event: Event){
@@ -120,7 +122,6 @@ export class PostCreateComponent implements OnInit {
   getBinaryCodeOfImg(file: File) {
     const reader = new FileReader(); // need for get binary code of img
     reader.onload = () => {
-      console.log('reader.result', reader.result);
       this.imagePreview = reader.result as string;
     }
     reader.readAsDataURL(file);

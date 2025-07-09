@@ -20,8 +20,18 @@
     <textarea  matInput rows="6" formControlName="content"></textarea>
   </mat-form-field>
 
-  <button (click)="uploadFile.click()"  type="button" color="accent" class="btn" mat-raised-button>upload img <mat-icon>upload_file</mat-icon></button>
+  <div>
+    <img [src]="oldImg" alt="" width="300">
+  </div>
+
+  <button (click)="uploadFile.click()"
+          type="button"
+          color="accent"
+          class="btn"
+          mat-raised-button>upload img <mat-icon>upload_file</mat-icon>
+  </button>
   <input type="file" #uploadFile hidden (change)="onImgPicked($event)">
+
 
   @if (imagePreview && imagePreview != '') {
     <div class="img-preview">
@@ -30,7 +40,7 @@
   }
 
   <button
-    [disabled]="form.invalid"
+    [disabled]="form.invalid && !this.oldImg"
     color="primary"
     type="button"
     mat-raised-button

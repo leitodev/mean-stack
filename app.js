@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 require('dotenv').config();
 
 const mongoose = require("mongoose");
@@ -21,6 +22,9 @@ mongoose.connect(mongoURI, {
 app.use(express.json());
 // application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+// allow static files
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // CORS
 app.use((req, res, next) => {
