@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const mongoose = require("mongoose");
 const postsRoutes = require("./routes/posts");
+const usersRoutes = require("./routes/users");
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 // used path '/api/posts' for all child routes 'postsRoutes'
 app.use('/api/posts', postsRoutes);
+app.use('/api/users', usersRoutes);
 
 module.exports = app;
 

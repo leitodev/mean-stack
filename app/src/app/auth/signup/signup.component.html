@@ -1,0 +1,35 @@
+
+@if (isLoading) {
+  <mat-spinner></mat-spinner>
+}
+
+@if (!isLoading) {
+  <mat-card [formGroup]="form" style="margin-top: 10px">
+
+    <mat-form-field style="margin-top: 15px">
+      <mat-label>email</mat-label>
+      <input type="email" matInput formControlName="email" name="email">
+    </mat-form-field>
+
+    @if (form.get('email')?.touched && form.get('email')?.invalid) {
+      email invalid (min length 3)
+    }
+
+    <mat-form-field style="margin-top: 15px">
+      <mat-label>password</mat-label>
+      <input type="password" matInput formControlName="password" name="password">
+    </mat-form-field>
+
+    @if (form.get('password')?.touched && form.get('password')?.invalid) {
+      password invalid (min length 3)
+    }
+
+    <button
+      [disabled]="form.invalid"
+      color="primary"
+      type="button"
+      mat-raised-button
+      class="btn"
+      (click)="signup()">Signup</button>
+  </mat-card>
+}

@@ -3,6 +3,13 @@ a {
   color: #008d8d !important;
 }
 
-ul {
+.nav {
   list-style: none;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+}
+
+.activeMenu {
+  background-color: #d9d9d9;
 }

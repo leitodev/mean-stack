@@ -2,13 +2,30 @@
   <a routerLink="/">
     My Application
   </a>
-  <ul style="display: flex">
+  <ul class="nav">
     <li>
-      <a mat-button routerLink="create" routerLinkActive="mat-accent">New Post</a>
+      <a mat-button routerLink="create"  routerLinkActive="activeMenu">New Post</a>
     </li>
 
     <li>
-      <a mat-button target="_blank" [href]="udemyLink">udemy</a>
+      <a mat-button target="_blank" [href]="udemyLink">{{udemyLinkName}}</a>
     </li>
+
+    @if(!isAuthenticated) {
+    <li>
+      <a mat-button routerLink="login" routerLinkActive="activeMenu">Login</a>
+    </li>
+
+    <li>
+      <a mat-button routerLink="signup" routerLinkActive="activeMenu">Signup</a>
+    </li>
+    }
+
+    @if(isAuthenticated) {
+      <li>
+        <a mat-button (click)="logout()">Logout</a>
+      </li>
+    }
+
   </ul>
 </mat-toolbar>

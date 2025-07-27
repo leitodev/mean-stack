@@ -4,9 +4,10 @@ const Post = require("../models/post");
 const multer = require("multer");
 const router = express.Router();
 const storage = require("../multer_config");
+const checkAuth = require("../middleware/check-auth");
 
 // parent path is '/api/posts'
-router.post('', multer({storage: storage}).single('image'),async (req, res) => {
+router.post('', checkAuth, multer({storage: storage}).single('image'),async (req, res) => {
     const url = req.protocol + '://' + req.get('host');
     console.log('req.protocol', req.protocol);
 
@@ -62,7 +63,7 @@ router.get('', async (req, res, next) => {
     });
 });
 
-router.put('/:id', multer({storage: storage}).single('image'), async (req, res) => {
+router.put('/:id', checkAuth, multer({storage: storage}).single('image'), async (req, res) => {
     // TODO delete old versions of images
     let imagePath = '';
 
@@ -90,7 +91,7 @@ router.put('/:id', multer({storage: storage}).single('image'), async (req, res) 
 
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuth, async (req, res) => {
 
     const deletedPost = await Post.deleteOne({ _id: req.params.id });
     console.log('deletedPost', deletedPost);
