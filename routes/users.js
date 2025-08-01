@@ -66,6 +66,7 @@ router.post('/login',async (req, res) => {
         {expiresIn: '1h'});
 
     res.status(200).json({
+        userData: {id: user._id, name: user.email},
         isPasswordValid: isPasswordValid,
         token: token,
         expiresIn: 3600

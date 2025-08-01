@@ -41,13 +41,15 @@ export class LoginComponent {
     if (this.form.value.email && this.form.value.password) {
       const {email, password} = this.form.value;
 
+      // TODO need improve it
       this.authService.login(email, password).subscribe({
         next: (data) => {
           console.log('after login', data);
           this.authService.setToken(data.token);
           this.authService.setAuthStatus(true);
           this.authService.watchToken(data.expiresIn);
-          this.authService.setAuthDateForStorage(data)
+          this.authService.setAuthDateForStorage(data);
+          this.authService.setUser(data.userData);
 
           this.router.navigate(['']).then(() => {});
         },

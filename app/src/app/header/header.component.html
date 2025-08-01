@@ -27,5 +27,11 @@
       </li>
     }
 
+    @if(userData && userData.name != '') {
+    <li>
+      <a mat-button>[ {{userData.name}} ]</a>
+    </li>
+    }
+
   </ul>
 </mat-toolbar>

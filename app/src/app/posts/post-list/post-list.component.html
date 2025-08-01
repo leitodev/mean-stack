@@ -16,6 +16,7 @@
       <img [src]="post.imagePath" alt="" width="300">
     </div>
 
+    @if (userData.id && post.creator && post.creator === userData.id) {
     <button
       color="primary"
       type="button"
@@ -27,6 +28,7 @@
       type="button"
       mat-raised-button
       (click)="delete(post.id)">DELETE</button>
+    }
 
   </mat-expansion-panel>
   }

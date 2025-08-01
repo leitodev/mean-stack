@@ -43,9 +43,14 @@ export class PostService {
       }
     }
 
-    this.http.put(`http://localhost:3000/api/posts/${updatedPost.id}`, postData).subscribe(data => {
-      console.log('### after update', data);
-      this.router.navigate(['']).then(() => {});
+    this.http.put(`http://localhost:3000/api/posts/${updatedPost.id}`, postData).subscribe({
+      next: (data) => {
+        console.log('after update', data);
+      },
+      error: err => {
+        alert(err.error.message); // TODO need toaster
+        console.error('error update', err.error.message);
+      }
     })
   }
 

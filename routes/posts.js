@@ -15,6 +15,7 @@ router.post('', checkAuth, multer({storage: storage}).single('image'),async (req
         title: req.body.title,
         content: req.body.content,
         imagePath: url + "/images/" + req.file.filename,
+        creator: req.userTokenData.userId
     });
 
     const createdPost = await newPost.save(); // INSERT
@@ -58,7 +59,7 @@ router.get('', async (req, res, next) => {
 
     res.status(200).json({
         message: 'Posts fetched successfully!',
-        posts: posts.map(({ id, title, content, imagePath }) => ({ id, title, content, imagePath })),
+        posts: posts.map(({ id, title, content, imagePath, creator }) => ({ id, title, content, imagePath, creator })),
         totalPosts
     });
 });
@@ -82,25 +83,38 @@ router.put('/:id', checkAuth, multer({storage: storage}).single('image'), async 
         imagePath: imagePath
     });
 
-    const updatedPost = await Post.updateOne({ _id: req.params.id }, post);
+    const updatedPost = await Post.updateOne({ _id: req.params.id, creator: req.userTokenData.userId }, post);
 
-    res.status(200).json({
-        message: 'updated post successfully!',
-        data: updatedPost
+    if (updatedPost.modifiedCount > 0) {
+        res.status(200).json({
+            message: 'updated post successfully!',
+            data: updatedPost
+        });
+        return;
+    }
+
+    res.status(401).json({
+        message: 'incorrect user!'
     });
 
 });
 
 router.delete('/:id', checkAuth, async (req, res) => {
 
-    const deletedPost = await Post.deleteOne({ _id: req.params.id });
+    const deletedPost = await Post.deleteOne({ _id: req.params.id, creator: req.userTokenData.userId });
     console.log('deletedPost', deletedPost);
 
-    const totalPosts = await Post.countDocuments();
+    if (deletedPost.deletedCount > 0) {
+        const totalPosts = await Post.countDocuments();
+        res.status(200).json({
+            message: req.params.id + ' successfully deleted.',
+            totalPosts
+        });
+        return;
+    }
 
-    res.status(200).json({
-        message: req.params.id + ' successfully deleted.',
-        totalPosts
+    res.status(401).json({
+        message: 'You can\'t delete!!!'
     });
 
 })
