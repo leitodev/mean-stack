@@ -85,8 +85,6 @@ export class PostCreateComponent implements OnInit {
       image = this.oldImg;
     }
 
-    console.log('image', image);
-
     const newPost = {
       id:  Math.floor(Math.random() * 121323).toString(),
       title: title,

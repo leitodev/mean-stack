@@ -3,11 +3,13 @@ import {Post} from "./post";
 import {Subject} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
+  toastr = inject(ToastrService);
   private posts: Post[] = [];
   private postsUpdated = new Subject<{ posts: Post[], totalPosts: number }>();
   private readonly router = inject(Router);
@@ -26,7 +28,6 @@ export class PostService {
   }
 
   updatePost(updatedPost: {id: string, title: string, content: string, image: File | null | string}) {
-    console.log('update!!!!!!!!!!!!', updatedPost);
 
     let postData: Post | FormData;
     if (updatedPost.image && typeof updatedPost.image === 'object') {
@@ -43,16 +44,11 @@ export class PostService {
       }
     }
 
-    this.http.put(`http://localhost:3000/api/posts/${updatedPost.id}`, postData).subscribe({
-      next: (data) => {
-        console.log('after update', data);
+    this.http.put<{ data: { postName: string } }>(`http://localhost:3000/api/posts/${updatedPost.id}`, postData)
+      .subscribe((res) => {
+        this.toastr.success(res.data.postName+' has been updated!');
         this.router.navigate(['']).then(() => {});
-      },
-      error: err => {
-        alert(err.error.message); // TODO need toaster
-        console.error('error update', err.error.message);
-      }
-    })
+    });
   }
 
   getPost(id: string) {
@@ -70,7 +66,7 @@ export class PostService {
 
     this.http.post<{ message: number, data: Post, totalPosts: number }>('http://localhost:3000/api/posts', postData)
       .subscribe(result => {
-        console.log('after post added', result);
+        this.toastr.success(result.data.title + ' has been added!');
         this.router.navigate(['']).then(() => {});
       });
 

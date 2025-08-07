@@ -12,6 +12,7 @@ import {Router, RouterLink} from "@angular/router";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {AuthService, User} from "../../auth/auth.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-post-list',
@@ -29,6 +30,7 @@ import {AuthService, User} from "../../auth/auth.service";
 })
 export class PostListComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
+  toastr = inject(ToastrService);
 
   posts:Post[] = [];
   isLoading = false;
@@ -60,16 +62,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   delete(postId: string) {
-    this.postService.deletePost(postId).subscribe({
-      next: (data) => {
+    this.postService.deletePost(postId).subscribe(() => {
+        this.toastr.success('Post has been deleted!');
         this.postService.getPosts(this.currentPage, this.postsPerPage);
-      },
-      error: err => {
-        alert(err.error.message); // TODO need toaster
-        console.error('error update', err.error.message);
-      }
     });
-
   }
 
   onPageChanged($event: PageEvent) {

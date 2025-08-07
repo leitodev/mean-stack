@@ -54,6 +54,14 @@ exports.getPosts = async (req, res, next) => {
     });
 }
 exports.updatePost = async (req, res) => {
+
+    if (req.body.title === '') {
+        res.status(400).json({
+            message: 'title should not be empty!',
+        });
+        return;
+    }
+
     // TODO delete old versions of images
     let imagePath = '';
 
@@ -77,7 +85,7 @@ exports.updatePost = async (req, res) => {
     if (updatedPost.modifiedCount > 0) {
         res.status(200).json({
             message: 'updated post successfully!',
-            data: updatedPost
+            data: {...updatedPost, postName: req.body.title}
         });
         return;
     }
