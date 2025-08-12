@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
+require('dotenv').config();
+
+const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
+
 exports.createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUser = await mongoose.models.User.findOne({ email: req.body.email });
@@ -51,7 +55,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign({email: user.email, userId: user._id},
-        "long_secret_private_key", // TODO need to put it into ENV file
+        JWT_PRIVATE_KEY, // TODO need to put it into ENV file
         {expiresIn: '1h'});
 
     res.status(200).json({

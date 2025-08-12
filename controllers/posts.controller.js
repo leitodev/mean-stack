@@ -98,7 +98,6 @@ exports.updatePost = async (req, res) => {
 exports.deletePost = async (req, res) => {
 
     const deletedPost = await Post.deleteOne({ _id: req.params.id, creator: req.userTokenData.userId });
-    console.log('deletedPost', deletedPost);
 
     if (deletedPost.deletedCount > 0) {
         const totalPosts = await Post.countDocuments();

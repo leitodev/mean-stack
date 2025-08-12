@@ -9,6 +9,7 @@ const usersRoutes = require("./routes/users");
 const app = express();
 
 const mongoURI = process.env.MONGODB_URI;
+const FRONT_END_CORS_URL = process.env.FRONT_END_CORS_URL;
 
 mongoose.connect(mongoURI, {
     dbName: 'mean-db'
@@ -29,7 +30,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // CORS
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.setHeader('Access-Control-Allow-Origin', FRONT_END_CORS_URL);
     // res.setHeader('Access-Control-Allow-Origin', '*'); // for all
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');

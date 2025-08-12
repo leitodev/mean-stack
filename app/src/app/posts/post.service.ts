@@ -4,6 +4,7 @@ import {Subject} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class PostService {
       .set('page', page)
       .set('pagesize', postsPerPage);
 
-    this.http.get<{message: string, posts: Post[], totalPosts: number}>('http://localhost:3000/api/posts', {params}).subscribe(data => {
+    this.http.get<{message: string, posts: Post[], totalPosts: number}>(environment.apiUrl+'/api/posts', {params}).subscribe(data => {
       this.posts = data.posts;
       this.postsUpdated.next({posts: [...data.posts], totalPosts: data.totalPosts});
     });
@@ -44,7 +45,7 @@ export class PostService {
       }
     }
 
-    this.http.put<{ data: { postName: string } }>(`http://localhost:3000/api/posts/${updatedPost.id}`, postData)
+    this.http.put<{ data: { postName: string } }>(environment.apiUrl+`/api/posts/${updatedPost.id}`, postData)
       .subscribe((res) => {
         this.toastr.success(res.data.postName+' has been updated!');
         this.router.navigate(['']).then(() => {});
@@ -64,7 +65,7 @@ export class PostService {
       postData.append('image', post.image, post.title);
     }
 
-    this.http.post<{ message: number, data: Post, totalPosts: number }>('http://localhost:3000/api/posts', postData)
+    this.http.post<{ message: number, data: Post, totalPosts: number }>(environment.apiUrl+'/api/posts', postData)
       .subscribe(result => {
         this.toastr.success(result.data.title + ' has been added!');
         this.router.navigate(['']).then(() => {});
@@ -77,7 +78,7 @@ export class PostService {
   }
 
   deletePost(postId: string) {
-    return this.http.delete<{totalPosts: number, message: string}>('http://localhost:3000/api/posts/' + postId);
+    return this.http.delete<{totalPosts: number, message: string}>(environment.apiUrl+'/api/posts/' + postId);
   }
 
 

@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, Subject} from "rxjs";
 import {Router} from "@angular/router";
+import {environment} from "../../environments/environment";
 
 export interface User { // would be good to move into user service or in another folder
   id: string;
@@ -30,11 +31,11 @@ export class AuthService {
   }
 
   createUser(email: string, password: string) {
-    return this.http.post('http://localhost:3000/api/users/signup', {email: email, password: password});
+    return this.http.post(environment.apiUrl+'/api/users/signup', {email: email, password: password});
   }
 
   login(email: string, password: string) {
-    return this.http.post<{token: string, expiresIn: number, userData: User}>('http://localhost:3000/api/users/login', {email: email, password: password});
+    return this.http.post<{token: string, expiresIn: number, userData: User}>(environment.apiUrl+'/api/users/login', {email: email, password: password});
   }
 
   setToken(token: string) {
