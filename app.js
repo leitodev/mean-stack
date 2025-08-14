@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // allow static files
 app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/', express.static(path.join(__dirname, 'angular-web')));
 
 // CORS
 app.use((req, res, next) => {
@@ -40,6 +41,12 @@ app.use((req, res, next) => {
 // used path '/api/posts' for all child routes 'postsRoutes'
 app.use('/api/posts', postsRoutes);
 app.use('/api/users', usersRoutes);
+
+// allow backend read built angular folder 'angular-web'
+// app.use('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'angular-web', 'index.html'));
+// });
+
 
 module.exports = app;
 

@@ -1,8 +1,10 @@
 {
   "name": "node backend server",
   "version": "0.0.1",
+  "main": "server.js",
   "scripts": {
-    "start:server": "nodemon server.js"
+    "start:server": "nodemon server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
